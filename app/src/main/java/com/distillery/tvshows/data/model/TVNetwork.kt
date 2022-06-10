@@ -1,0 +1,19 @@
+package com.distillery.tvshows.data.model
+
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+
+data class TVNetwork(
+    @SerializedName("id")
+    @Expose
+    val id : Int,
+    @SerializedName("name")
+    @Expose
+    val name : String,
+    @SerializedName("country")
+    @Expose
+    val country : Country? = null,
+    @SerializedName("officialSite")
+    @Expose
+    val officialSite : String,
+)

@@ -1,0 +1,110 @@
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/grey_100"
+    android:orientation="vertical"
+    android:paddingTop="16dp"
+    tools:context=".ui.detail.DetailFragment">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <ImageView
+            android:id="@+id/tvShowImage"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:scaleType="fitCenter"
+            tools:ignore="ContentDescription"
+            tools:src="@drawable/ic_dashboard" />
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:padding="8dp"
+            app:cardCornerRadius="8dp">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="8dp">
+                <TextView
+                    android:id="@+id/tvShowRatingTitle"
+                    style="@style/TextView.Title"
+                    android:layout_alignTop="@+id/tvShowRating"
+                    android:layout_alignBottom="@id/tvShowRating"
+                    android:gravity="center_vertical"
+                    android:text="@string/rating" />
+                <androidx.appcompat.widget.AppCompatRatingBar
+                    android:id="@+id/tvShowRating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/tvShowRatingTitle"
+                    android:numStars="5"
+                    tools:rating="2" />
+                <TextView
+                    android:id="@+id/tvShowSummaryTitle"
+                    style="@style/TextView.Title"
+                    android:layout_below="@+id/tvShowRatingTitle"
+                    android:text="@string/overview" />
+                <TextView
+                    android:id="@+id/tvShowSummary"
+                    style="@style/TextView.Description"
+                    android:layout_below="@+id/tvShowSummaryTitle"
+                    tools:text="@string/overview" />
+                <TextView
+                    android:id="@+id/tvShowType"
+                    style="@style/TextView.Description"
+                    android:layout_below="@id/tvShowSummary"
+                    tools:text="@string/show_type" />
+                <TextView
+                    android:id="@+id/tvShowLanguage"
+                    style="@style/TextView.Description"
+                    android:layout_below="@+id/tvShowType"
+                    tools:text="@string/language" />
+                <TextView
+                    android:id="@+id/tvShowGenres"
+                    style="@style/TextView.Description"
+                    android:layout_below="@id/tvShowLanguage"
+                    tools:text="@string/genres" />
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:padding="8dp"
+            app:cardCornerRadius="8dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="8dp">
+                <TextView
+                    android:id="@+id/tvShowIMDB"
+                    style="@style/TextView.Description"
+                    android:visibility="gone"
+                    tools:text="@string/imdb" />
+                <TextView
+                    android:id="@+id/tvShowPremiered"
+                    style="@style/TextView.Description"
+                    tools:text="@string/premiered" />
+                <TextView
+                    android:id="@+id/tvShowEnded"
+                    style="@style/TextView.Description"
+                    tools:text="@string/ended" />
+                <TextView
+                    android:id="@+id/tvShowNetwork"
+                    style="@style/TextView.Description"
+                    tools:text="@string/network" />
+                <TextView
+                    android:id="@+id/tvShowSite"
+                    style="@style/TextView.Description"
+                    android:autoLink="web"
+                    android:clickable="true"
+                    android:focusable="true"
+                    tools:text="@string/official_site" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">TV Shows</string>
+    <string name="sucess_message">Your changes have been successfully saved!</string>
+    <string name="title_remove">Remove Favorite</string>
+    <string name="title_add">Add Favorite</string>
+    <string name="title_shows">Shows</string>
+    <string name="title_favorites">Favorites</string>
+    <string name="title_detail">TV Show Detail</string>
+    <string name="rating">Rating:</string>
+    <string name="overview">Overview</string>
+    <string name="network">Network:</string>
+    <string name="premiered">Premiered:</string>
+    <string name="ended">Ended:</string>
+    <string name="show_type">Show Type:</string>
+    <string name="official_site">Official Site:</string>
+    <string name="genres">Genres:</string>
+    <string name="language">Language:</string>
+    <string name="imdb">IMDB:</string>
+    <string name="imdb_url">https://www.imdb.com/title/%1$s</string>
+    <string name="retry_action_favorite">There was a problem saving/deleting this TV Show. Do you want to try again?</string>
+    <string name="retry_action_connection">An error occurred while fetching data. Do you want to try again?</string>
+    <string name="oops_something_went_wrong">Oops, something went wrong</string>
+    <string name="add_action_favorite">Are you sure that you want to add to your favorite TV Show?</string>
+    <string name="delete_action_favorite">Are you sure that you want to delete from your favorite TV Show?</string>
+    <string name="ok">OK</string>
+    <string name="retry">Retry</string>
+    <string name="cancel">Cancel</string>
+</resources>
