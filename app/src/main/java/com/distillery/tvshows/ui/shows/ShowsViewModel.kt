@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.distillery.tvshows.data.entity.FavoriteTVShow
-import com.distillery.tvshows.data.model.TVShow
+import com.distillery.tvshows.data.enums.NetError
 import com.distillery.tvshows.network.TVApi
 import com.distillery.tvshows.repository.FavoritesRepository
 import com.distillery.tvshows.utils.helpers.ConnectivityHelper
@@ -20,14 +20,11 @@ class ShowsViewModel @Inject constructor(
     private val connectivityHelper: ConnectivityHelper,
 ) : ViewModel() {
 
-    private val _tvShows = MutableLiveData(emptyList<TVShow>())
-    val tvShows: LiveData<List<TVShow>> = _tvShows
+    private val _tvShows = MutableLiveData(emptyList<FavoriteTVShow>())
+    val tvShows: LiveData<List<FavoriteTVShow>> = _tvShows
 
-    private val _timeoutOcurred = MutableLiveData(false)
-    val timeoutOcurred: LiveData<Boolean> = _timeoutOcurred
-
-    private val _hasConnectivity = MutableLiveData<Boolean>(true)
-    val hasConnectivity: LiveData<Boolean> = _hasConnectivity
+    private val _errorOcurred = MutableLiveData(NetError.NONE)
+    val errorOcurred: LiveData<NetError> = _errorOcurred
 
     init {
         loadTVShows()
@@ -37,31 +34,34 @@ class ShowsViewModel @Inject constructor(
      * Load TV Shows
      */
     fun loadTVShows() {
-        _hasConnectivity.value = connectivityHelper.isNetConnected()
-        if(hasConnectivity.value!!) {
+        val hasConnectivity = connectivityHelper.isNetConnected()
+        if(hasConnectivity) {
             viewModelScope.launch {
                 try {
-                    val tvShows = tvApi.getShows()
+                    val tvShows = tvApi.getShows().map { FavoriteTVShow.from(it) }
+                    repository.getFavorites().forEach {
+                        tvShows.firstOrNull { item -> item.id == it.id }?.isFavorite = true
+                    }
                     _tvShows.value = tvShows
-                    _timeoutOcurred.value = false
+                    _errorOcurred.value = NetError.NONE
                 } catch (error: Throwable) {
-                    _timeoutOcurred.value = true
+                    _errorOcurred.value = NetError.TIMEOUT
                 }
+            }
+        } else {
+            _errorOcurred.value = NetError.CONNECTIVITY
+        }
+    }
+
+    fun doFavoriteAction(tvShow: FavoriteTVShow) {
+        viewModelScope.launch {
+            if (tvShow.isFavorite) {
+                tvShow.isFavorite = false
+                repository.removeFavoriteTVShow(tvShow)
+            } else {
+                tvShow.isFavorite = true
+                repository.addFavoriteTVShow(tvShow)
             }
         }
     }
-
-    fun addFavorite(tvShow: TVShow) {
-        viewModelScope.launch {
-            repository.addFavoriteTVShow(FavoriteTVShow.from(tvShow))
-        }
-    }
-
-    fun removeFavorite(tvShow: TVShow) {
-        viewModelScope.launch {
-            repository.removeFavoriteTVShow(FavoriteTVShow.from(tvShow))
-        }
-    }
-
-    suspend fun isFavoriteTVShow(id: Int): Boolean = repository.anyFavoriteById(id)
 }

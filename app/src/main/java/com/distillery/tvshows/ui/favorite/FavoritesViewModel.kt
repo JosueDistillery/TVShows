@@ -30,7 +30,6 @@ class FavoritesViewModel @Inject constructor(
     fun removeFavorite(favoriteTVShow: FavoriteTVShow) {
         viewModelScope.launch {
             repository.removeFavoriteTVShow(favoriteTVShow)
-            loadFavorites()
         }
     }
 }

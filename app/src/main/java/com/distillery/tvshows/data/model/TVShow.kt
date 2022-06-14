@@ -36,10 +36,10 @@ data class TVShow(
     val premiered: String,
     @SerializedName("ended")
     @Expose
-    val ended: String,
+    val ended: String?= null,
     @SerializedName("officialSite")
     @Expose
-    val officialSite: String,
+    val officialSite: String?= null,
     @SerializedName("schedule")
     @Expose
     val schedule: TVSchedule?= null,

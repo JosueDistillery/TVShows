@@ -23,6 +23,7 @@ data class FavoriteTVShow(
     var imdb: String,
     val image: String,
     val summary: String,
+    var isFavorite: Boolean = false,
 ) : Parcelable {
 
     companion object {
@@ -40,14 +41,14 @@ data class FavoriteTVShow(
             name = tvShow.name,
             type = tvShow.type,
             language = tvShow.language,
-            genres = tvShow.genres!!,
+            genres = tvShow.genres ?: emptyList(),
             premiered = tvShow.premiered,
-            ended = tvShow.ended,
-            officialSite = tvShow.officialSite,
-            rating = tvShow.rating!!.average!!.toFloat(),
-            network = tvShow.network!!.name,
-            imdb = tvShow.externals!!.imdb,
-            image = tvShow.image!!.medium,
+            ended = tvShow.ended ?: "",
+            officialSite = tvShow.officialSite ?: "",
+            rating = tvShow.rating?.average?.toFloat() ?: 0.0f,
+            network = tvShow.network?.name ?: "",
+            imdb = tvShow.externals?.imdb ?: "",
+            image = tvShow.image?.medium ?: "",
             summary = tvShow.summary,
         )
     }

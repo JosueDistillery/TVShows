@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.distillery.tvshows.R
@@ -13,6 +14,8 @@ import com.distillery.tvshows.data.entity.FavoriteTVShow
 import com.distillery.tvshows.databinding.FragmentFavoritesBinding
 import com.distillery.tvshows.utils.createAndShowDialog
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
  * Favorite TV Shows screen
@@ -68,13 +71,16 @@ class FavoritesFragment : Fragment() {
     private fun onItemClick(tvShow: FavoriteTVShow)  =
         findNavController().navigate(FavoritesFragmentDirections.actionNavigationFavoritesToNavigationDetail(tvShow))
 
-    private fun onLongClick(tvShow: FavoriteTVShow) {
+    private fun onLongClick(tvShow: FavoriteTVShow, position: Int) {
         createAndShowDialog(
             requireContext(),
             "",
             getString(R.string.delete_action_favorite),
             getString(R.string.ok),
-            onPositiveAction = { viewModel.removeFavorite(tvShow) }
+            onPositiveAction = {
+                viewModel.removeFavorite(tvShow)
+                adapter.setItemRemoved(position)
+            }
         )
     }
 }

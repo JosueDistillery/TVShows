@@ -1,31 +1,38 @@
 package com.distillery.tvshows.ui.shows
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.distillery.tvshows.data.model.TVShow
+import com.distillery.tvshows.data.entity.FavoriteTVShow
 import com.distillery.tvshows.databinding.ItemShowBinding
 
 class ShowsViewHolder(private val binding: ItemShowBinding) : RecyclerView.ViewHolder(binding.root) {
+
+    var item: FavoriteTVShow? = null
+
+    val addView: View by lazy { binding.addView }
+    val deleteView: View by lazy { binding.deleteView }
+    val foregroundView: View by lazy { binding.foregroundView }
+
     /**
-     * @param content [TVShow] for this item layout
+     * @param content [FavoriteTVShow] for this item layout
      * @param onItemClick Click listener for this item layout
      */
     fun bindTo(
-        content: TVShow,
-        onItemClick: (TVShow) -> Unit,
-        onLongClick: (TVShow) -> Unit,
+        content: FavoriteTVShow,
+        onItemClick: (FavoriteTVShow) -> Unit,
     ) {
+        item = content
+
         with(binding) {
             binding.showName.text = content.name
-            Glide.with(itemView.context).load(content.image?.medium).into(binding.showImage)
+            Glide.with(itemView.context).load(content.image).into(binding.showImage)
 
             root.setOnClickListener { onItemClick(content) }
-            root.setOnLongClickListener {
-                onLongClick(content)
-                true
-            }
         }
     }
 
@@ -36,7 +43,6 @@ class ShowsViewHolder(private val binding: ItemShowBinding) : RecyclerView.ViewH
     fun unBind() {
         with(binding) {
             root.setOnClickListener(null)
-            root.setOnLongClickListener(null)
         }
     }
 

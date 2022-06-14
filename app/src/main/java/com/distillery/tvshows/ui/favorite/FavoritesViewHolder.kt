@@ -1,16 +1,13 @@
 package com.distillery.tvshows.ui.favorite
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.distillery.tvshows.data.entity.FavoriteTVShow
 import com.distillery.tvshows.databinding.ItemFavoriteBinding
 
 class FavoritesViewHolder(private val binding: ItemFavoriteBinding) : RecyclerView.ViewHolder(binding.root) {
-
     /**
      * @param content [FavoriteTVShow] for this item layout
      * @param onItemClick Click listener for this item layout
@@ -18,16 +15,15 @@ class FavoritesViewHolder(private val binding: ItemFavoriteBinding) : RecyclerVi
     fun bindTo(
         content: FavoriteTVShow,
         onItemClick: (FavoriteTVShow) -> Unit,
-        onLongClick: (FavoriteTVShow) -> Unit,
+        onLongClick: (FavoriteTVShow, Int) -> Unit,
     ) {
-
         with(binding) {
             binding.favoriteName.text = content.name
             Glide.with(itemView.context).load(content.image).into(binding.favoriteImage)
 
             root.setOnClickListener { onItemClick(content) }
             root.setOnLongClickListener {
-                onLongClick(content)
+                onLongClick(content, bindingAdapterPosition)
                 true
             }
         }

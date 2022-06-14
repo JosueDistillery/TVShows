@@ -9,15 +9,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.navArgs
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.distillery.tvshows.R
-import com.distillery.tvshows.data.entity.FavoriteTVShow
 import com.distillery.tvshows.databinding.FragmentDetailBinding
 import com.distillery.tvshows.utils.extensions.*
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 /**
  * TV Show detail screen
@@ -58,11 +55,8 @@ class DetailFragment : Fragment() {
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        lifecycleScope.launch(Dispatchers.Main) {
-            val isFavoriteTVShow = viewModel.isFavoriteTVShow(args.tvShowDetail.id)
-            menu.findItem(R.id.action_add).isVisible = !isFavoriteTVShow
-            menu.findItem(R.id.action_remove).isVisible = isFavoriteTVShow
-        }
+        menu.findItem(R.id.action_add).isVisible = !args.tvShowDetail.isFavorite
+        menu.findItem(R.id.action_remove).isVisible = args.tvShowDetail.isFavorite
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -74,6 +68,7 @@ class DetailFragment : Fragment() {
             }
             R.id.action_remove -> {
                 viewModel.removeFavorite(args.tvShowDetail)
+                findNavController().popBackStack()
                 Toast.makeText(requireContext(), getString(R.string.sucess_message),Toast.LENGTH_SHORT).show()
                 return true
             }
@@ -121,7 +116,6 @@ class DetailFragment : Fragment() {
         }
     }
 
-    private fun openBrowser() {
+    private fun openBrowser() =
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.imdb_url, viewModel.tvShowDetail.value!!.imdb))))
-    }
 }

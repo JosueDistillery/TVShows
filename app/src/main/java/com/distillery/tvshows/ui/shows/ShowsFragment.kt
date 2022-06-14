@@ -7,17 +7,16 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.distillery.tvshows.R
 import com.distillery.tvshows.data.entity.FavoriteTVShow
-import com.distillery.tvshows.data.model.TVShow
+import com.distillery.tvshows.data.enums.NetError
 import com.distillery.tvshows.databinding.FragmentShowsBinding
+import com.distillery.tvshows.utils.ItemTouchHelperCallback
 import com.distillery.tvshows.utils.createAndShowDialog
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 /**
  * TV Shows screen
@@ -27,7 +26,10 @@ class ShowsFragment : Fragment() {
 
     private val viewModel by viewModels<ShowsViewModel>()
 
-    private val adapter by lazy { ShowsAdapter(::onItemClick, ::onLongClick) }
+    private val adapter by lazy { ShowsAdapter(::onItemClick) }
+
+    private val itemTouchHelper by lazy { ItemTouchHelper(itemTouchHelperCallback) }
+    private val itemTouchHelperCallback by lazy { ItemTouchHelperCallback(::onSwipe) }
 
     private val supportActionBar by lazy { (requireActivity() as AppCompatActivity).supportActionBar }
 
@@ -60,6 +62,8 @@ class ShowsFragment : Fragment() {
         with(binding) {
             recyclerView.layoutManager = LinearLayoutManager(requireContext())
             recyclerView.adapter = adapter
+
+            itemTouchHelper.attachToRecyclerView(recyclerView)
         }
     }
 
@@ -71,70 +75,40 @@ class ShowsFragment : Fragment() {
                 }
             }
 
-            timeoutOcurred.observe(viewLifecycleOwner) {
-                if (it) {
-                    createAndShowDialog(
-                        requireContext(),
-                        getString(R.string.oops_something_went_wrong),
-                        getString(R.string.retry_action_connection),
-                        onPositiveAction = {
-                            loadTVShows()
+            errorOcurred.observe(viewLifecycleOwner) {
+                it?.let {
+                    when (it) {
+                        NetError.TIMEOUT, NetError.CONNECTIVITY -> {
+                            createAndShowDialog(
+                                requireContext(),
+                                getString(R.string.oops_something_went_wrong),
+                                getString(R.string.retry_action_connection),
+                                onPositiveAction = ::loadTVShows
+                            )
                         }
-                    )
-                }
-            }
-
-            hasConnectivity.observe(viewLifecycleOwner) {
-                if (!it) {
-                    createAndShowDialog(
-                        requireContext(),
-                        getString(R.string.oops_something_went_wrong),
-                        getString(R.string.retry_action_connection),
-                        onPositiveAction = {
-                            loadTVShows()
-                        }
-                    )
+                    }
                 }
             }
         }
     }
 
-    private fun onItemClick(tvShow: TVShow) {
-        val tvShowDetail = FavoriteTVShow.from(tvShow)
-        findNavController().navigate(ShowsFragmentDirections.actionNavigationShowsToNavigationDetail(tvShowDetail))
+    private fun onItemClick(tvShow: FavoriteTVShow) {
+        findNavController().navigate(ShowsFragmentDirections.actionNavigationShowsToNavigationDetail(tvShow))
     }
 
-    private fun onLongClick(tvShow: TVShow) {
-        lifecycleScope.launch(Dispatchers.Main) {
-            val isFavoriteTVShow = viewModel.isFavoriteTVShow(tvShow.id)
-            createAndShowDialog(
-                requireContext(),
-                "",
-                if (isFavoriteTVShow) getString(R.string.delete_action_favorite) else getString(R.string.add_action_favorite),
-                getString(R.string.ok),
-                onPositiveAction = {
-                    requireFavoriteAction(tvShow, isFavoriteTVShow)
-                }
-            )
-        }
-    }
-
-    private fun requireFavoriteAction(tvShow: TVShow, isFavoriteTVShow: Boolean) = try {
-        if (isFavoriteTVShow)
-            viewModel.removeFavorite(tvShow)
-        else
-            viewModel.addFavorite(tvShow)
+    private fun onSwipe(tvShow: FavoriteTVShow, position: Int) = try {
+        doFavoriteAction(tvShow, position)
     } catch (error: Throwable) {
         createAndShowDialog(
             requireContext(),
             getString(R.string.oops_something_went_wrong),
             getString(R.string.retry_action_favorite),
-            onPositiveAction = {
-                if (isFavoriteTVShow)
-                    viewModel.removeFavorite(tvShow)
-                else
-                    viewModel.addFavorite(tvShow)
-            }
+            onPositiveAction = { doFavoriteAction(tvShow, position) }
         )
+    }
+
+    private fun doFavoriteAction(tvShow: FavoriteTVShow, position: Int) {
+        viewModel.doFavoriteAction(tvShow)
+        adapter.setItemChanged(tvShow, position)
     }
 }

@@ -12,7 +12,7 @@ import com.distillery.tvshows.ui.shows.ShowsViewHolder
  */
 class FavoritesAdapter(
     private val onItemClick: (FavoriteTVShow) -> Unit,
-    private val onLongClick: (FavoriteTVShow) -> Unit,
+    private val onLongClick: (FavoriteTVShow, Int) -> Unit,
 ) : RecyclerView.Adapter<FavoritesViewHolder>() {
 
     private val items = mutableListOf<FavoriteTVShow>()
@@ -35,5 +35,10 @@ class FavoritesAdapter(
         items.clear()
         items.addAll(favorites)
         notifyDataSetChanged()
+    }
+
+    fun setItemRemoved(position: Int){
+        items.removeAt(position)
+        notifyItemRemoved(position)
     }
 }

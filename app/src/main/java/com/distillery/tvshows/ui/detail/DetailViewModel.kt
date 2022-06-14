@@ -30,8 +30,10 @@ class DetailViewModel @Inject constructor(
         }
     }
 
+
     fun addFavorite(favoriteTVShow: FavoriteTVShow) {
         viewModelScope.launch {
+            favoriteTVShow.isFavorite = true
             repository.addFavoriteTVShow(favoriteTVShow)
         }
     }
@@ -41,6 +43,4 @@ class DetailViewModel @Inject constructor(
             repository.removeFavoriteTVShow(favoriteTVShow)
         }
     }
-
-    suspend  fun isFavoriteTVShow(id: Int): Boolean = repository.anyFavoriteById(id)
 }
