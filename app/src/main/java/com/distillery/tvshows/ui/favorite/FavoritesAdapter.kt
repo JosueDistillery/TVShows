@@ -11,8 +11,8 @@ import com.distillery.tvshows.ui.shows.ShowsViewHolder
  * Adapter for Favorites TV shows
  */
 class FavoritesAdapter(
-    private val onItemClick: (Int) -> Unit,
-    private val onLongClick: (Int) -> Unit,
+    private val onItemClick: (FavoriteTVShow) -> Unit,
+    private val onLongClick: (FavoriteTVShow) -> Unit,
 ) : RecyclerView.Adapter<FavoritesViewHolder>() {
 
     private val items = mutableListOf<FavoriteTVShow>()

@@ -1,10 +1,12 @@
 package com.distillery.tvshows.di
 
+import android.content.Context
 import android.net.ConnectivityManager
 import com.distillery.tvshows.utils.helpers.ConnectivityHelper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -17,8 +19,8 @@ object HelperModule {
     @Provides
     @Singleton
     fun provideConnectivityHelper(
-        connectivityManager: ConnectivityManager
+        @ApplicationContext context: Context
     ): ConnectivityHelper {
-        return ConnectivityHelper.build(connectivityManager)
+        return ConnectivityHelper.build(context)
     }
 }

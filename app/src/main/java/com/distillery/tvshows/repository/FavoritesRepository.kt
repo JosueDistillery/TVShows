@@ -19,6 +19,12 @@ class FavoritesRepository(
         null
     }
 
+    suspend fun anyFavoriteById(id: Int): Boolean = try {
+        favoriteTVShowDao.anyFavoriteById(id) == 1
+    } catch (error: Throwable) {
+        false
+    }
+
     suspend fun addFavoriteTVShow(favoriteTVShow: FavoriteTVShow): Boolean = try {
         favoriteTVShowDao.addFavorite(favoriteTVShow)
         true

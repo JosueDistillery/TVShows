@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.distillery.tvshows.R
+import com.distillery.tvshows.data.entity.FavoriteTVShow
 import com.distillery.tvshows.databinding.FragmentFavoritesBinding
 import com.distillery.tvshows.utils.createAndShowDialog
 import dagger.hilt.android.AndroidEntryPoint
@@ -64,18 +65,16 @@ class FavoritesFragment : Fragment() {
         }
     }
 
-    private fun onItemClick(position: Int) {
-        val tvShowDetail = viewModel.getFavorite(position)
-        findNavController().navigate(FavoritesFragmentDirections.actionNavigationFavoritesToNavigationDetail(tvShowDetail))
-    }
+    private fun onItemClick(tvShow: FavoriteTVShow)  =
+        findNavController().navigate(FavoritesFragmentDirections.actionNavigationFavoritesToNavigationDetail(tvShow))
 
-    private fun onLongClick(position: Int) {
+    private fun onLongClick(tvShow: FavoriteTVShow) {
         createAndShowDialog(
             requireContext(),
             "",
             getString(R.string.delete_action_favorite),
             getString(R.string.ok),
-            onPositiveAction = { viewModel.removeFavorite(position) }
+            onPositiveAction = { viewModel.removeFavorite(tvShow) }
         )
     }
 }

@@ -14,16 +14,16 @@ class ShowsViewHolder(private val binding: ItemShowBinding) : RecyclerView.ViewH
      */
     fun bindTo(
         content: TVShow,
-        onItemClick: (Int) -> Unit,
-        onLongClick: (Int) -> Unit,
+        onItemClick: (TVShow) -> Unit,
+        onLongClick: (TVShow) -> Unit,
     ) {
         with(binding) {
             binding.showName.text = content.name
             Glide.with(itemView.context).load(content.image?.medium).into(binding.showImage)
 
-            root.setOnClickListener { onItemClick(bindingAdapterPosition) }
+            root.setOnClickListener { onItemClick(content) }
             root.setOnLongClickListener {
-                onLongClick(bindingAdapterPosition)
+                onLongClick(content)
                 true
             }
         }
@@ -31,7 +31,7 @@ class ShowsViewHolder(private val binding: ItemShowBinding) : RecyclerView.ViewH
 
     /**
      * Clear up
-     * Remove click listener
+     * Remove listeners
      */
     fun unBind() {
         with(binding) {

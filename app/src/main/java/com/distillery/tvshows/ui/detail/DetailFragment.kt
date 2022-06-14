@@ -59,7 +59,7 @@ class DetailFragment : Fragment() {
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
         lifecycleScope.launch(Dispatchers.Main) {
-            val isFavoriteTVShow = viewModel.isFavoriteTVShow(viewModel.tvShowDetail.value!!.id)
+            val isFavoriteTVShow = viewModel.isFavoriteTVShow(args.tvShowDetail.id)
             menu.findItem(R.id.action_add).isVisible = !isFavoriteTVShow
             menu.findItem(R.id.action_remove).isVisible = isFavoriteTVShow
         }
@@ -68,12 +68,12 @@ class DetailFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId) {
             R.id.action_add -> {
-                viewModel.addFavorite(viewModel.tvShowDetail.value!!)
+                viewModel.addFavorite(args.tvShowDetail)
                 Toast.makeText(requireContext(), getString(R.string.sucess_message),Toast.LENGTH_SHORT).show()
                 return true
             }
             R.id.action_remove -> {
-                viewModel.removeFavorite(viewModel.tvShowDetail.value!!)
+                viewModel.removeFavorite(args.tvShowDetail)
                 Toast.makeText(requireContext(), getString(R.string.sucess_message),Toast.LENGTH_SHORT).show()
                 return true
             }
@@ -83,12 +83,19 @@ class DetailFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        removeListeners()
         _binding = null
     }
 
     private fun initUi() {
         with(binding) {
             tvShowIMDB.setOnClickListener { openBrowser() }
+        }
+    }
+
+    private fun removeListeners() {
+        with(binding) {
+            tvShowIMDB.setOnClickListener(null)
         }
     }
 

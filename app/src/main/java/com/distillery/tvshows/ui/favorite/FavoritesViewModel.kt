@@ -27,17 +27,10 @@ class FavoritesViewModel @Inject constructor(
         }
     }
 
-    fun getFavorite(position: Int): FavoriteTVShow = favorites.value!!.get(position)
-
-    fun removeFavorite(position: Int): Boolean = try {
-        var sucess = false
+    fun removeFavorite(favoriteTVShow: FavoriteTVShow) {
         viewModelScope.launch {
-            val favoriteTVShow = getFavorite(position)
-            sucess = repository.removeFavoriteTVShow(favoriteTVShow)
+            repository.removeFavoriteTVShow(favoriteTVShow)
             loadFavorites()
         }
-        sucess
-    }catch (error: Throwable){
-        false
     }
 }

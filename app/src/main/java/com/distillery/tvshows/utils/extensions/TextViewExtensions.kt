@@ -19,10 +19,5 @@ fun TextView.setHtmlText(html: String) {
 }
 
 fun TextView.setVisibility(visible: Boolean) {
-    visibility.also {
-        if (visible)
-            View.VISIBLE
-        else
-            View.GONE
-    }
+    visibility = if (visible) View.VISIBLE else View.GONE
 }

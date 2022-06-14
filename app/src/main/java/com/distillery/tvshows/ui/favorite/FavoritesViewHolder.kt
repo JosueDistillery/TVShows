@@ -17,16 +17,17 @@ class FavoritesViewHolder(private val binding: ItemFavoriteBinding) : RecyclerVi
      */
     fun bindTo(
         content: FavoriteTVShow,
-        onItemClick: (Int) -> Unit,
-        onLongClick: (Int) -> Unit,
+        onItemClick: (FavoriteTVShow) -> Unit,
+        onLongClick: (FavoriteTVShow) -> Unit,
     ) {
+
         with(binding) {
             binding.favoriteName.text = content.name
             Glide.with(itemView.context).load(content.image).into(binding.favoriteImage)
 
-            root.setOnClickListener { onItemClick(bindingAdapterPosition) }
+            root.setOnClickListener { onItemClick(content) }
             root.setOnLongClickListener {
-                onLongClick(bindingAdapterPosition)
+                onLongClick(content)
                 true
             }
         }
@@ -34,7 +35,7 @@ class FavoritesViewHolder(private val binding: ItemFavoriteBinding) : RecyclerVi
 
     /**
      * Clear up
-     * Remove click listener
+     * Remove listeners
      */
     fun unBind() {
         with(binding) {

@@ -25,8 +25,7 @@ class DetailViewModel @Inject constructor(
     @SuppressLint("NullSafeMutableLiveData")
     fun loadDetail(tvShowSelected: FavoriteTVShow) {
         viewModelScope.launch {
-            var tvShowDetail = repository.getFavoriteById(tvShowSelected.id)
-            if(tvShowDetail == null) tvShowDetail = tvShowSelected
+            val tvShowDetail = repository.getFavoriteById(tvShowSelected.id) ?: tvShowSelected
             _tvShowDetail.value = tvShowDetail
         }
     }
@@ -43,8 +42,5 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    suspend fun isFavoriteTVShow(id: Int): Boolean {
-        val result = repository.getFavoriteById(id)
-        return result != null
-    }
+    suspend  fun isFavoriteTVShow(id: Int): Boolean = repository.anyFavoriteById(id)
 }

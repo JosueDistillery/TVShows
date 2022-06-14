@@ -6,14 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.distillery.tvshows.R
+import com.distillery.tvshows.data.entity.FavoriteTVShow
+import com.distillery.tvshows.data.model.TVShow
 import com.distillery.tvshows.databinding.FragmentShowsBinding
-import com.distillery.tvshows.ui.detail.DetailFragment
 import com.distillery.tvshows.utils.createAndShowDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -71,7 +71,7 @@ class ShowsFragment : Fragment() {
                 }
             }
 
-            timeout.observe(viewLifecycleOwner) {
+            timeoutOcurred.observe(viewLifecycleOwner) {
                 if (it) {
                     createAndShowDialog(
                         requireContext(),
@@ -84,7 +84,7 @@ class ShowsFragment : Fragment() {
                 }
             }
 
-            connectivity.observe(viewLifecycleOwner) {
+            hasConnectivity.observe(viewLifecycleOwner) {
                 if (!it) {
                     createAndShowDialog(
                         requireContext(),
@@ -99,31 +99,31 @@ class ShowsFragment : Fragment() {
         }
     }
 
-    private fun onItemClick(position: Int) {
-        val tvShowDetail = viewModel.getFavoriteTVShow(position)
+    private fun onItemClick(tvShow: TVShow) {
+        val tvShowDetail = FavoriteTVShow.from(tvShow)
         findNavController().navigate(ShowsFragmentDirections.actionNavigationShowsToNavigationDetail(tvShowDetail))
     }
 
-    private fun onLongClick(position: Int) {
+    private fun onLongClick(tvShow: TVShow) {
         lifecycleScope.launch(Dispatchers.Main) {
-            val isFavoriteTVShow = viewModel.isFavoriteTVShow(position)
+            val isFavoriteTVShow = viewModel.isFavoriteTVShow(tvShow.id)
             createAndShowDialog(
                 requireContext(),
                 "",
                 if (isFavoriteTVShow) getString(R.string.delete_action_favorite) else getString(R.string.add_action_favorite),
                 getString(R.string.ok),
                 onPositiveAction = {
-                    requireFavoriteAction(position, isFavoriteTVShow)
+                    requireFavoriteAction(tvShow, isFavoriteTVShow)
                 }
             )
         }
     }
 
-    private fun requireFavoriteAction(position: Int, isFavoriteTVShow: Boolean) = try {
+    private fun requireFavoriteAction(tvShow: TVShow, isFavoriteTVShow: Boolean) = try {
         if (isFavoriteTVShow)
-            viewModel.removeFavorite(position)
+            viewModel.removeFavorite(tvShow)
         else
-            viewModel.addFavorite(position)
+            viewModel.addFavorite(tvShow)
     } catch (error: Throwable) {
         createAndShowDialog(
             requireContext(),
@@ -131,9 +131,9 @@ class ShowsFragment : Fragment() {
             getString(R.string.retry_action_favorite),
             onPositiveAction = {
                 if (isFavoriteTVShow)
-                    viewModel.removeFavorite(position)
+                    viewModel.removeFavorite(tvShow)
                 else
-                    viewModel.addFavorite(position)
+                    viewModel.addFavorite(tvShow)
             }
         )
     }

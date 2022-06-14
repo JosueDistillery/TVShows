@@ -8,8 +8,8 @@ import com.distillery.tvshows.data.model.TVShow
  * Adapter for TV shows
  */
 class ShowsAdapter(
-    private val onItemClick: (Int) -> Unit,
-    private val onLongClick: (Int) -> Unit,
+    private val onItemClick: (TVShow) -> Unit,
+    private val onLongClick: (TVShow) -> Unit,
 ) : RecyclerView.Adapter<ShowsViewHolder>() {
 
     private var items = mutableListOf<TVShow>()

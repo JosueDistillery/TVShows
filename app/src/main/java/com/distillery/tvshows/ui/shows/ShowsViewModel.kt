@@ -23,11 +23,11 @@ class ShowsViewModel @Inject constructor(
     private val _tvShows = MutableLiveData(emptyList<TVShow>())
     val tvShows: LiveData<List<TVShow>> = _tvShows
 
-    private val _timeout = MutableLiveData(false)
-    val timeout: LiveData<Boolean> = _timeout
+    private val _timeoutOcurred = MutableLiveData(false)
+    val timeoutOcurred: LiveData<Boolean> = _timeoutOcurred
 
-    private val _connectivity = MutableLiveData<Boolean>(true)
-    val connectivity: LiveData<Boolean> = _connectivity
+    private val _hasConnectivity = MutableLiveData<Boolean>(true)
+    val hasConnectivity: LiveData<Boolean> = _hasConnectivity
 
     init {
         loadTVShows()
@@ -37,42 +37,31 @@ class ShowsViewModel @Inject constructor(
      * Load TV Shows
      */
     fun loadTVShows() {
-        _connectivity.value = connectivityHelper.isNetConnected()
-        if(connectivity.value!!) {
+        _hasConnectivity.value = connectivityHelper.isNetConnected()
+        if(hasConnectivity.value!!) {
             viewModelScope.launch {
                 try {
                     val tvShows = tvApi.getShows()
                     _tvShows.value = tvShows
-                    _timeout.value = false
+                    _timeoutOcurred.value = false
                 } catch (error: Throwable) {
-                    _timeout.value = true
+                    _timeoutOcurred.value = true
                 }
             }
         }
     }
 
-    fun getTVShow(position: Int): TVShow = tvShows.value!!.get(position)
-
-    fun getFavoriteTVShow(position: Int): FavoriteTVShow =
-        FavoriteTVShow.from(tvShows.value!!.get(position))
-
-    fun addFavorite(position: Int) {
+    fun addFavorite(tvShow: TVShow) {
         viewModelScope.launch {
-            val tvShow = getTVShow(position)
             repository.addFavoriteTVShow(FavoriteTVShow.from(tvShow))
         }
     }
 
-    fun removeFavorite(position: Int) {
+    fun removeFavorite(tvShow: TVShow) {
         viewModelScope.launch {
-            val favoriteTVShow = getFavoriteTVShow(position)
-            repository.removeFavoriteTVShow(favoriteTVShow)
+            repository.removeFavoriteTVShow(FavoriteTVShow.from(tvShow))
         }
     }
 
-    suspend fun isFavoriteTVShow(position: Int): Boolean {
-        val tvShow = getTVShow(position)
-        val result = repository.getFavoriteById(tvShow.id)
-        return result != null
-    }
+    suspend fun isFavoriteTVShow(id: Int): Boolean = repository.anyFavoriteById(id)
 }
