@@ -7,6 +7,12 @@ import com.distillery.tvshows.database.dao.FavoriteTVShowDao
 class FavoritesRepository(
     private val favoriteTVShowDao: FavoriteTVShowDao
 ) {
+    suspend fun anyFavoriteById(id: Int): Boolean = try {
+        favoriteTVShowDao.anyFavoriteById(id) == 1
+    } catch (error: Throwable) {
+        false
+    }
+
     suspend fun getFavorites(): List<FavoriteTVShow> = try {
         favoriteTVShowDao.getFavorites()
     } catch (error: Throwable) {

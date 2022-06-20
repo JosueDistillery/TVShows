@@ -6,10 +6,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
+import androidx.navigation.ui.*
 import com.distillery.tvshows.data.entity.FavoriteTVShow
 import com.distillery.tvshows.databinding.ActivityMainBinding
 import com.distillery.tvshows.databinding.FragmentDetailBinding
@@ -27,7 +24,12 @@ class MainActivity : AppCompatActivity() {
 
     private val viewModel by viewModels<MainViewModel>()
 
-    private val navController by lazy { findNavController(R.id.nav_host_fragment_activity_main) }
+    private val isDualPane by lazy { resources.getBoolean(R.bool.isDualPane) }
+
+    private val navController by lazy {
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.main_nav_host_fragment) as NavHostFragment
+        navHostFragment.navController
+    }
 
     private var _binding: ActivityMainBinding? = null
     private val binding get() = _binding!!
@@ -40,10 +42,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> navController.popBackStack()
-            else -> super.onOptionsItemSelected(item)
+        when (item.itemId) {
+            android.R.id.home ->  if (isDualPane) return navController.popBackStack()
         }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun initUi() {
@@ -51,5 +53,9 @@ class MainActivity : AppCompatActivity() {
             setupActionBarWithNavController(navController, getDefaultAppBarConfiguration())
             bottomNavView.setupWithNavController(navController)
         }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp(getDefaultAppBarConfiguration()) || super.onSupportNavigateUp()
     }
 }

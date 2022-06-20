@@ -26,10 +26,6 @@ class ShowsViewModel @Inject constructor(
     private val _errorOcurred = MutableLiveData(NetError.NONE)
     val errorOcurred: LiveData<NetError> = _errorOcurred
 
-    init {
-        loadTVShows()
-    }
-
     /**
      * Load TV Shows
      */

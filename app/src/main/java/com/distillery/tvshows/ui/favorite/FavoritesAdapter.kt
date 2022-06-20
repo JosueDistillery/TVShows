@@ -3,9 +3,6 @@ package com.distillery.tvshows.ui.favorite
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.distillery.tvshows.data.entity.FavoriteTVShow
-import com.distillery.tvshows.data.model.TVShow
-import com.distillery.tvshows.databinding.ItemFavoriteBinding
-import com.distillery.tvshows.ui.shows.ShowsViewHolder
 
 /**
  * Adapter for Favorites TV shows

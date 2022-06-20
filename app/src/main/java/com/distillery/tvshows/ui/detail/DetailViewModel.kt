@@ -1,6 +1,5 @@
 package com.distillery.tvshows.ui.detail
 
-import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -22,11 +21,13 @@ class DetailViewModel @Inject constructor(
     /**
      * Load TV Show Detail
      */
-    @SuppressLint("NullSafeMutableLiveData")
-    fun loadDetail(tvShowSelected: FavoriteTVShow) {
-        viewModelScope.launch {
-            val tvShowDetail = repository.getFavoriteById(tvShowSelected.id) ?: tvShowSelected
-            _tvShowDetail.value = tvShowDetail
+    fun loadDetail(tvShowSelected: FavoriteTVShow?) {
+        tvShowSelected?.let {
+            viewModelScope.launch {
+                if(!repository.anyFavoriteById(it.id))
+                    it.isFavorite = false
+                _tvShowDetail.value = it
+            }
         }
     }
 
@@ -40,6 +41,7 @@ class DetailViewModel @Inject constructor(
 
     fun removeFavorite(favoriteTVShow: FavoriteTVShow) {
         viewModelScope.launch {
+            favoriteTVShow.isFavorite = false
             repository.removeFavoriteTVShow(favoriteTVShow)
         }
     }

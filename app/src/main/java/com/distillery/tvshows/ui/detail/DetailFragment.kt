@@ -26,6 +26,8 @@ class DetailFragment : Fragment() {
 
     private val viewModel by viewModels<DetailViewModel>()
 
+    private val isDualPane by lazy { resources.getBoolean(R.bool.isDualPane) }
+
     private val supportActionBar by lazy { (requireActivity() as AppCompatActivity).supportActionBar }
 
     private var _binding: FragmentDetailBinding? = null
@@ -55,21 +57,29 @@ class DetailFragment : Fragment() {
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        menu.findItem(R.id.action_add).isVisible = !args.tvShowDetail.isFavorite
-        menu.findItem(R.id.action_remove).isVisible = args.tvShowDetail.isFavorite
+        val item = viewModel.tvShowDetail.value
+        if (item != null) {
+            menu.findItem(R.id.action_add).isVisible = !item.isFavorite
+            menu.findItem(R.id.action_remove).isVisible = item.isFavorite
+        } else {
+            menu.findItem(R.id.action_add).isVisible = false
+            menu.findItem(R.id.action_remove).isVisible = false
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId) {
+        return when (item.itemId) {
             R.id.action_add -> {
-                viewModel.addFavorite(args.tvShowDetail)
-                Toast.makeText(requireContext(), getString(R.string.sucess_message),Toast.LENGTH_SHORT).show()
+                args.tvShowDetail?.let(viewModel::addFavorite)
+                requireActivity().invalidateOptionsMenu()
+                Toast.makeText(requireContext(), getString(R.string.sucess_message), Toast.LENGTH_SHORT).show()
                 return true
             }
             R.id.action_remove -> {
-                viewModel.removeFavorite(args.tvShowDetail)
+                args.tvShowDetail?.let(viewModel::removeFavorite)
+                requireActivity().invalidateOptionsMenu()
                 findNavController().popBackStack()
-                Toast.makeText(requireContext(), getString(R.string.sucess_message),Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.sucess_message), Toast.LENGTH_SHORT).show()
                 return true
             }
             else -> super.onOptionsItemSelected(item)
@@ -84,6 +94,7 @@ class DetailFragment : Fragment() {
 
     private fun initUi() {
         with(binding) {
+            root.visibility = View.INVISIBLE
             tvShowIMDB.setOnClickListener { openBrowser() }
         }
     }
@@ -98,7 +109,8 @@ class DetailFragment : Fragment() {
         with(viewModel) {
             tvShowDetail.observe(viewLifecycleOwner) {
                 it?.let {
-                    supportActionBar?.title = it.name
+                    binding.root.visibility = View.VISIBLE
+                    if(!isDualPane) supportActionBar?.title = it.name
                     Glide.with(requireContext()).load(it.image).into(binding.tvShowImage)
                     binding.tvShowRating.rating = it.rating
                     binding.tvShowSummary.setHtmlText(it.summary)
@@ -111,11 +123,12 @@ class DetailFragment : Fragment() {
                     binding.tvShowNetwork.setBoldTitle(getString(R.string.network), it.network)
                     binding.tvShowIMDB.setBoldTitle(getString(R.string.imdb), it.imdb)
                     binding.tvShowIMDB.setVisibility(!it.imdb.isEmpty())
+                    requireActivity().invalidateOptionsMenu()
                 }
             }
         }
     }
 
     private fun openBrowser() =
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.imdb_url, viewModel.tvShowDetail.value!!.imdb))))
+        startActivity(Intent(Intent.ACTION_VIEW,Uri.parse(getString(R.string.imdb_url, viewModel.tvShowDetail.value!!.imdb))))
 }

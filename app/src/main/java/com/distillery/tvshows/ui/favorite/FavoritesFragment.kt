@@ -6,16 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.slidingpanelayout.widget.SlidingPaneLayout
 import com.distillery.tvshows.R
 import com.distillery.tvshows.data.entity.FavoriteTVShow
 import com.distillery.tvshows.databinding.FragmentFavoritesBinding
+import com.distillery.tvshows.ui.detail.DetailFragmentDirections
+import com.distillery.tvshows.utils.DualPaneOnBackPressedCallback
 import com.distillery.tvshows.utils.createAndShowDialog
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 /**
  * Favorite TV Shows screen
@@ -24,6 +25,8 @@ import kotlinx.coroutines.launch
 class FavoritesFragment : Fragment() {
 
     private val viewModel by viewModels<FavoritesViewModel>()
+
+    private val isDualPane by lazy { resources.getBoolean(R.bool.isDualPane) }
 
     private val adapter by lazy { FavoritesAdapter(::onItemClick, ::onLongClick) }
 
@@ -55,6 +58,12 @@ class FavoritesFragment : Fragment() {
         with(binding) {
             recyclerView.layoutManager = LinearLayoutManager(requireContext())
             recyclerView.adapter = adapter
+
+            slidingPaneLayout.lockMode = SlidingPaneLayout.LOCK_MODE_LOCKED
+            requireActivity().onBackPressedDispatcher.addCallback(
+                viewLifecycleOwner,
+                DualPaneOnBackPressedCallback(binding.slidingPaneLayout)
+            )
         }
     }
 
@@ -68,8 +77,14 @@ class FavoritesFragment : Fragment() {
         }
     }
 
-    private fun onItemClick(tvShow: FavoriteTVShow)  =
-        findNavController().navigate(FavoritesFragmentDirections.actionNavigationFavoritesToNavigationDetail(tvShow))
+    private fun onItemClick(tvShow: FavoriteTVShow) {
+        if (isDualPane) {
+            binding.detailNavHostFragment?.findNavController()?.navigate(DetailFragmentDirections.actionDetailFragment(tvShow))
+            binding.slidingPaneLayout.open()
+        } else{
+            findNavController().navigate(FavoritesFragmentDirections.actionDetailFragment(tvShow))
+        }
+    }
 
     private fun onLongClick(tvShow: FavoriteTVShow, position: Int) {
         createAndShowDialog(

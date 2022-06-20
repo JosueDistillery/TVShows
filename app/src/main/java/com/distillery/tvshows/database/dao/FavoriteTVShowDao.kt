@@ -5,6 +5,9 @@ import com.distillery.tvshows.data.entity.FavoriteTVShow
 
 @Dao
 interface FavoriteTVShowDao {
+    @Query("SELECT Count(id) FROM favorites WHERE id = :id LIMIT 1")
+    suspend fun anyFavoriteById(id: Int): Int
+
     @Query("SELECT * FROM favorites WHERE id = :id")
     suspend fun getFavoriteById(id: Int): FavoriteTVShow
 

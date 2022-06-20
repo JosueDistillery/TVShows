@@ -12,8 +12,8 @@ fun getDefaultAppBarConfiguration(): AppBarConfiguration {
      * Top level destinations won't have a back button.
      */
     val topLevelDestinations = setOf(
-        R.id.navigation_shows,
-        R.id.navigation_favorites
+        R.id.showsFragment,
+        R.id.favoritesFragment
     )
     return AppBarConfiguration(topLevelDestinations)
 }

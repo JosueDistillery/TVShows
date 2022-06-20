@@ -1,19 +1,21 @@
 package com.distillery.tvshows.ui.shows
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.slidingpanelayout.widget.SlidingPaneLayout
 import com.distillery.tvshows.R
 import com.distillery.tvshows.data.entity.FavoriteTVShow
 import com.distillery.tvshows.data.enums.NetError
 import com.distillery.tvshows.databinding.FragmentShowsBinding
+import com.distillery.tvshows.ui.detail.DetailFragmentDirections
+import com.distillery.tvshows.utils.DualPaneOnBackPressedCallback
 import com.distillery.tvshows.utils.ItemTouchHelperCallback
 import com.distillery.tvshows.utils.createAndShowDialog
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,8 +30,9 @@ class ShowsFragment : Fragment() {
 
     private val adapter by lazy { ShowsAdapter(::onItemClick) }
 
-    private val itemTouchHelper by lazy { ItemTouchHelper(itemTouchHelperCallback) }
-    private val itemTouchHelperCallback by lazy { ItemTouchHelperCallback(::onSwipe) }
+    private val isDualPane by lazy { resources.getBoolean(R.bool.isDualPane) }
+
+    private val itemTouchHelper by lazy { ItemTouchHelper(ItemTouchHelperCallback(::onSwipe)) }
 
     private val supportActionBar by lazy { (requireActivity() as AppCompatActivity).supportActionBar }
 
@@ -49,6 +52,7 @@ class ShowsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initUi()
         initObservers()
+        viewModel.loadTVShows()
     }
 
     override fun onDestroyView() {
@@ -64,6 +68,12 @@ class ShowsFragment : Fragment() {
             recyclerView.adapter = adapter
 
             itemTouchHelper.attachToRecyclerView(recyclerView)
+
+            slidingPaneLayout.lockMode = SlidingPaneLayout.LOCK_MODE_LOCKED
+            requireActivity().onBackPressedDispatcher.addCallback(
+                viewLifecycleOwner,
+                DualPaneOnBackPressedCallback(binding.slidingPaneLayout)
+            )
         }
     }
 
@@ -86,6 +96,7 @@ class ShowsFragment : Fragment() {
                                 onPositiveAction = ::loadTVShows
                             )
                         }
+                        else -> {}
                     }
                 }
             }
@@ -93,7 +104,12 @@ class ShowsFragment : Fragment() {
     }
 
     private fun onItemClick(tvShow: FavoriteTVShow) {
-        findNavController().navigate(ShowsFragmentDirections.actionNavigationShowsToNavigationDetail(tvShow))
+        if (isDualPane) {
+            binding.detailNavHostFragment?.findNavController()?.navigate(DetailFragmentDirections.actionDetailFragment(tvShow))
+            binding.slidingPaneLayout.open()
+        } else{
+            findNavController().navigate(ShowsFragmentDirections.actionDetailFragment(tvShow))
+        }
     }
 
     private fun onSwipe(tvShow: FavoriteTVShow, position: Int) = try {
@@ -110,5 +126,6 @@ class ShowsFragment : Fragment() {
     private fun doFavoriteAction(tvShow: FavoriteTVShow, position: Int) {
         viewModel.doFavoriteAction(tvShow)
         adapter.setItemChanged(tvShow, position)
+        if(isDualPane) requireActivity().invalidateOptionsMenu()
     }
 }
