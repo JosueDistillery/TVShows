@@ -30,12 +30,11 @@ class DetailFragment : Fragment() {
 
     private val supportActionBar by lazy { (requireActivity() as AppCompatActivity).supportActionBar }
 
-    private var _binding: FragmentDetailBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentDetailBinding? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentDetailBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentDetailBinding.inflate(inflater, container, false)
+        return binding!!.root
     }
 
     /**
@@ -89,28 +88,26 @@ class DetailFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         removeListeners()
-        _binding = null
+        binding = null
     }
 
     private fun initUi() {
-        with(binding) {
-            root.visibility = View.INVISIBLE
-            tvShowIMDB.setOnClickListener { openBrowser() }
+        binding?.let {
+            it.root.visibility = View.INVISIBLE
+            it.tvShowIMDB.setOnClickListener { openBrowser() }
         }
     }
 
     private fun removeListeners() {
-        with(binding) {
-            tvShowIMDB.setOnClickListener(null)
-        }
+        binding?.tvShowIMDB?.setOnClickListener(null)
     }
 
     private fun initObservers() {
-        with(viewModel) {
-            tvShowDetail.observe(viewLifecycleOwner) {
-                it?.let {
+        viewModel.tvShowDetail.observe(viewLifecycleOwner) {
+            it?.let {
+                binding?.let { binding ->
                     binding.root.visibility = View.VISIBLE
-                    if(!isDualPane) supportActionBar?.title = it.name
+                    if (!isDualPane) supportActionBar?.title = it.name
                     Glide.with(requireContext()).load(it.image).into(binding.tvShowImage)
                     binding.tvShowRating.rating = it.rating
                     binding.tvShowSummary.setHtmlText(it.summary)

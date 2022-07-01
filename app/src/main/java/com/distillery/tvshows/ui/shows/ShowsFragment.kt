@@ -36,16 +36,15 @@ class ShowsFragment : Fragment() {
 
     private val supportActionBar by lazy { (requireActivity() as AppCompatActivity).supportActionBar }
 
-    private var _binding: FragmentShowsBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentShowsBinding? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentShowsBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentShowsBinding.inflate(inflater, container, false)
+        return binding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -57,22 +56,22 @@ class ShowsFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding = null
     }
 
     private fun initUi() {
         supportActionBar?.title = getString(R.string.app_name)
 
-        with(binding) {
-            recyclerView.layoutManager = LinearLayoutManager(requireContext())
-            recyclerView.adapter = adapter
+        binding?.let {
+            it.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+            it.recyclerView.adapter = adapter
 
-            itemTouchHelper.attachToRecyclerView(recyclerView)
+            itemTouchHelper.attachToRecyclerView(it.recyclerView)
 
-            slidingPaneLayout.lockMode = SlidingPaneLayout.LOCK_MODE_LOCKED
+            it.slidingPaneLayout.lockMode = SlidingPaneLayout.LOCK_MODE_LOCKED
             requireActivity().onBackPressedDispatcher.addCallback(
                 viewLifecycleOwner,
-                DualPaneOnBackPressedCallback(binding.slidingPaneLayout)
+                DualPaneOnBackPressedCallback(it.slidingPaneLayout)
             )
         }
     }
@@ -105,8 +104,11 @@ class ShowsFragment : Fragment() {
 
     private fun onItemClick(tvShow: FavoriteTVShow) {
         if (isDualPane) {
-            binding.detailNavHostFragment?.findNavController()?.navigate(DetailFragmentDirections.actionDetailFragment(tvShow))
-            binding.slidingPaneLayout.open()
+            binding?.let {
+                it.detailNavHostFragment?.findNavController()
+                    ?.navigate(DetailFragmentDirections.actionDetailFragment(tvShow))
+                it.slidingPaneLayout.open()
+            }
         } else{
             findNavController().navigate(ShowsFragmentDirections.actionDetailFragment(tvShow))
         }

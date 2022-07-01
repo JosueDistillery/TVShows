@@ -23,7 +23,7 @@ class FavoritesViewModel @Inject constructor(
      */
     fun loadFavorites() {
         viewModelScope.launch {
-            _favorites.value = repository.getFavorites()
+            _favorites.postValue(repository.getFavorites())
         }
     }
 

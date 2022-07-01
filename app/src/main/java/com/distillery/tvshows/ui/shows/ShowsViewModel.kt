@@ -38,14 +38,14 @@ class ShowsViewModel @Inject constructor(
                     repository.getFavorites().forEach {
                         tvShows.firstOrNull { item -> item.id == it.id }?.isFavorite = true
                     }
-                    _tvShows.value = tvShows
-                    _errorOcurred.value = NetError.NONE
+                    _tvShows.postValue(tvShows)
+                    _errorOcurred.postValue(NetError.NONE)
                 } catch (error: Throwable) {
-                    _errorOcurred.value = NetError.TIMEOUT
+                    _errorOcurred.postValue(NetError.TIMEOUT)
                 }
             }
         } else {
-            _errorOcurred.value = NetError.CONNECTIVITY
+            _errorOcurred.postValue(NetError.CONNECTIVITY)
         }
     }
 

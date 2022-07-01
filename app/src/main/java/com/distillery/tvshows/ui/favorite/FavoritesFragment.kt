@@ -30,16 +30,15 @@ class FavoritesFragment : Fragment() {
 
     private val adapter by lazy { FavoritesAdapter(::onItemClick, ::onLongClick) }
 
-    private var _binding: FragmentFavoritesBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentFavoritesBinding? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentFavoritesBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentFavoritesBinding.inflate(inflater, container, false)
+        return binding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -51,37 +50,36 @@ class FavoritesFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding = null
     }
 
     private fun initUi() {
-        with(binding) {
-            recyclerView.layoutManager = LinearLayoutManager(requireContext())
-            recyclerView.adapter = adapter
+        binding?.let {
+            it.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+            it.recyclerView.adapter = adapter
 
-            slidingPaneLayout.lockMode = SlidingPaneLayout.LOCK_MODE_LOCKED
+            it.slidingPaneLayout.lockMode = SlidingPaneLayout.LOCK_MODE_LOCKED
             requireActivity().onBackPressedDispatcher.addCallback(
                 viewLifecycleOwner,
-                DualPaneOnBackPressedCallback(binding.slidingPaneLayout)
+                DualPaneOnBackPressedCallback(it.slidingPaneLayout)
             )
         }
     }
 
     private fun initObservers() {
-        with(viewModel) {
-            favorites.observe(viewLifecycleOwner) {
-                it?.let {
-                    adapter.setData(it)
-                }
-            }
+        viewModel.favorites.observe(viewLifecycleOwner) {
+            it?.let { adapter.setData(it) }
         }
     }
 
     private fun onItemClick(tvShow: FavoriteTVShow) {
         if (isDualPane) {
-            binding.detailNavHostFragment?.findNavController()?.navigate(DetailFragmentDirections.actionDetailFragment(tvShow))
-            binding.slidingPaneLayout.open()
-        } else{
+            binding?.let {
+                it.detailNavHostFragment?.findNavController()
+                    ?.navigate(DetailFragmentDirections.actionDetailFragment(tvShow))
+                it.slidingPaneLayout.open()
+            }
+        } else {
             findNavController().navigate(FavoritesFragmentDirections.actionDetailFragment(tvShow))
         }
     }

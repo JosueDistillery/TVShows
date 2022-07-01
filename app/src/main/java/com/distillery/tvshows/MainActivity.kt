@@ -31,13 +31,12 @@ class MainActivity : AppCompatActivity() {
         navHostFragment.navController
     }
 
-    private var _binding: ActivityMainBinding? = null
-    private val binding get() = _binding!!
+    private var binding: ActivityMainBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding!!.root)
         initUi()
     }
 
@@ -49,10 +48,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initUi() {
-        with(binding) {
-            setupActionBarWithNavController(navController, getDefaultAppBarConfiguration())
-            bottomNavView.setupWithNavController(navController)
-        }
+        setupActionBarWithNavController(navController, getDefaultAppBarConfiguration())
+        binding?.bottomNavView?.setupWithNavController(navController)
     }
 
     override fun onSupportNavigateUp(): Boolean {

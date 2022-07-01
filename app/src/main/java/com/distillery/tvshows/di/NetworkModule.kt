@@ -44,6 +44,7 @@ object NetworkModule {
      * Build [Retrofit]
      */
     @Provides
+    @Singleton
     fun provideRetrofit(
         httpClient: OkHttpClient,
         gsonConverterFactory: GsonConverterFactory
@@ -58,6 +59,7 @@ object NetworkModule {
      * Build [OkHttpClient]
      */
     @Provides
+    @Singleton
     fun provideOkHttpClient(
         loggingInterceptor: HttpLoggingInterceptor
     ): OkHttpClient =
@@ -71,7 +73,7 @@ object NetworkModule {
     /**
      * Create [TVApi]
      */
-    @JvmStatic
     @Provides
+    @Singleton
     fun provideTVApi(retrofit: Retrofit): TVApi = TVApi.create(retrofit)
 }

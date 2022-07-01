@@ -26,7 +26,7 @@ class DetailViewModel @Inject constructor(
             viewModelScope.launch {
                 if(!repository.anyFavoriteById(it.id))
                     it.isFavorite = false
-                _tvShowDetail.value = it
+                _tvShowDetail.postValue(it)
             }
         }
     }
