@@ -23,7 +23,7 @@ object RepositoryModule {
     @Singleton
     fun provideFavoriteRepository(
         favoriteDao: FavoriteDao
-    ): FavoriteRepository =FavoriteRepository.buildRepository(favoriteDao)
+    ): FavoriteRepository = FavoriteRepository.buildRepository(favoriteDao)
 
     /**
      * Provide [TVShowRepository]

@@ -56,10 +56,10 @@ class DetailFragment : Fragment() {
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        val item = viewModel.tvShowDetail.value
-        if (item != null) {
-            menu.findItem(R.id.action_add).isVisible = !item.isFavorite
-            menu.findItem(R.id.action_remove).isVisible = item.isFavorite
+        val isFavorite = viewModel.isFavorite.value
+        if (isFavorite != null) {
+            menu.findItem(R.id.action_add).isVisible = !isFavorite
+            menu.findItem(R.id.action_remove).isVisible = isFavorite
         } else {
             menu.findItem(R.id.action_add).isVisible = false
             menu.findItem(R.id.action_remove).isVisible = false
@@ -70,14 +70,12 @@ class DetailFragment : Fragment() {
         return when (item.itemId) {
             R.id.action_add -> {
                 args.tvShowDetail?.let(viewModel::addFavorite)
-                requireActivity().invalidateOptionsMenu()
                 Toast.makeText(requireContext(), getString(R.string.sucess_message), Toast.LENGTH_SHORT).show()
                 return true
             }
             R.id.action_remove -> {
                 args.tvShowDetail?.let(viewModel::removeFavorite)
-                requireActivity().invalidateOptionsMenu()
-                findNavController().popBackStack()
+                if (isDualPane) findNavController().popBackStack()
                 Toast.makeText(requireContext(), getString(R.string.sucess_message), Toast.LENGTH_SHORT).show()
                 return true
             }
@@ -120,9 +118,12 @@ class DetailFragment : Fragment() {
                     binding.tvShowNetwork.setBoldTitle(getString(R.string.network), it.network)
                     binding.tvShowIMDB.setBoldTitle(getString(R.string.imdb), it.imdb)
                     binding.tvShowIMDB.setVisibility(!it.imdb.isEmpty())
-                    requireActivity().invalidateOptionsMenu()
                 }
             }
+        }
+
+        viewModel.isFavorite.observe(viewLifecycleOwner){
+            it?.let { requireActivity().invalidateOptionsMenu() }
         }
     }
 

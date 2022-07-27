@@ -35,7 +35,7 @@ object DatabaseModule {
     }
 
     /**
-     * Provide [FavoriteDao]
+     * Provide [TVShowDao]
      */
     @Provides
     @Singleton
@@ -46,5 +46,5 @@ object DatabaseModule {
      */
     @Provides
     @Singleton
-    fun provideFavoriteTVShowDao(tvDatabase: TVDatabase): FavoriteDao = tvDatabase.favoriteTVShowDao()
+    fun provideFavoriteDao(tvDatabase: TVDatabase): FavoriteDao = tvDatabase.favoriteDao()
 }

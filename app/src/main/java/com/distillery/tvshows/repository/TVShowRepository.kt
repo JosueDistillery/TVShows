@@ -26,7 +26,7 @@ class TVShowRepository (
             getTVShowsFromDatabase()
         }
     } catch (e: Exception) {
-        Log.e(TAG, "Something went wrong, $e")
+        Log.e(TAG, "Something went wrong, $e.localizedMessage")
         emptyList()
     }
 

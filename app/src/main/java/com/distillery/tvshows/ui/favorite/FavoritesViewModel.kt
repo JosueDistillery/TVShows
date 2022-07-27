@@ -23,13 +23,15 @@ class FavoritesViewModel @Inject constructor(
      */
     fun loadFavorites() {
         viewModelScope.launch {
-            _favorites.postValue(repository.getFavorites())
+            val favorites = repository.getFavoriteTVShows()
+            _favorites.postValue(favorites)
         }
     }
 
-    fun removeFavorite(favorite: TVShow) {
+    fun removeFavorite(tvShow: TVShow) {
         viewModelScope.launch {
-            repository.removeFavorite(favorite)
+            val favorite = repository.getFavoriteById(tvShow.id)
+            favorite?.let { repository.RemoveFavorite(it) }
         }
     }
 }

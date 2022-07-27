@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.distillery.tvshows.data.entity.TVShow
+import com.distillery.tvshows.data.entity.*
 import com.distillery.tvshows.data.enums.NetError
 import com.distillery.tvshows.repository.FavoriteRepository
 import com.distillery.tvshows.repository.TVShowRepository
@@ -35,6 +35,9 @@ class ShowsViewModel @Inject constructor(
             viewModelScope.launch {
                 try {
                     val tvShows = showsRepository.getTVShows()
+                    favoriteRepository.getFavorites().forEach { favorite ->
+                        tvShows.firstOrNull { it.id == favorite.tvShowId }?.isFavorite = true
+                    }
                     _tvShows.postValue(tvShows)
                     _errorOcurred.postValue(NetError.NONE)
                 } catch (error: Throwable) {
@@ -48,12 +51,11 @@ class ShowsViewModel @Inject constructor(
 
     fun doFavoriteAction(tvShow: TVShow) {
         viewModelScope.launch {
-            if (tvShow.isFavorite) {
-                tvShow.isFavorite = false
-                favoriteRepository.removeFavorite(tvShow)
+            val favorite = favoriteRepository.getFavoriteById(tvShow.id)
+            if(favorite == null) {
+                favoriteRepository.AddFavorite(Favorite.from(tvShow))
             } else {
-                tvShow.isFavorite = true
-                favoriteRepository.addFavorite(tvShow)
+                favoriteRepository.RemoveFavorite(favorite)
             }
         }
     }

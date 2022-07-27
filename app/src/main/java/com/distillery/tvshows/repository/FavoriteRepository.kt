@@ -1,46 +1,50 @@
 package com.distillery.tvshows.repository
 
 import android.util.Log
+import com.distillery.tvshows.data.entity.Favorite
 import com.distillery.tvshows.data.entity.TVShow
 import com.distillery.tvshows.database.dao.FavoriteDao
 
 class FavoriteRepository(
     private val favoriteDao: FavoriteDao
 ) {
-    suspend fun anyFavoriteById(id: Int): Boolean = try {
-        favoriteDao.anyFavoriteById(id) == 1
+    suspend fun getFavoriteById(tvShowId: Int): Favorite? = try {
+        val favorite = favoriteDao.getFavoriteById(tvShowId)
+        favorite
     } catch (e: Exception) {
-        Log.e(TAG, "Something went wrong, $e")
-        false
-    }
-
-    suspend fun getFavorites(): List<TVShow> = try {
-        favoriteDao.getFavorites()
-    } catch (e: Exception) {
-        Log.e(TAG, "Something went wrong, $e")
-        emptyList()
-    }
-
-    suspend fun getFavoriteById(id: Int): TVShow? = try {
-        favoriteDao.getFavoriteById(id)
-    } catch (e: Exception) {
-        Log.e(TAG, "Something went wrong, $e")
+        Log.e(TAG, "Something went wrong, ${e.localizedMessage}")
         null
     }
 
-    suspend fun addFavorite(favorite: TVShow): Boolean = try {
-        favoriteDao.addFavorite(favorite)
+    suspend fun getFavorites(): List<Favorite> = try {
+        val favorites = favoriteDao.getFavorites()
+        favorites
+    } catch (e: Exception) {
+        Log.e(TAG, "Something went wrong, $e.localizedMessage")
+        emptyList()
+    }
+
+    suspend fun getFavoriteTVShows(): List<TVShow> = try {
+        val tvShows = favoriteDao.getFavoriteTVShows()
+        tvShows
+    } catch (e: Exception) {
+        Log.e(TAG, "Something went wrong, $e.localizedMessage")
+        emptyList()
+    }
+
+    suspend fun AddFavorite(favorite: Favorite): Boolean = try {
+        favoriteDao.AddFavorite(favorite)
         true
     } catch (e: Exception) {
-        Log.e(TAG, "Something went wrong, $e")
+        Log.e(TAG, "Something went wrong, $e.localizedMessage")
         false
     }
 
-    suspend fun removeFavorite(favorite: TVShow): Boolean = try {
-        favoriteDao.removeFavorite(favorite)
+    suspend fun RemoveFavorite(favorite: Favorite): Boolean = try {
+        favoriteDao.RemoveFavorite(favorite)
         true
     } catch (e: Exception) {
-        Log.e(TAG, "Something went wrong, $e")
+        Log.e(TAG, "Something went wrong, $e.localizedMessage")
         false
     }
 
