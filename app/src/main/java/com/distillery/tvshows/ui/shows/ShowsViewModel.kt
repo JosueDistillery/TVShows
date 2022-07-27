@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.distillery.tvshows.data.entity.FavoriteTVShow
+import com.distillery.tvshows.data.entity.TVShow
 import com.distillery.tvshows.data.enums.NetError
-import com.distillery.tvshows.network.TVApi
-import com.distillery.tvshows.repository.FavoritesRepository
+import com.distillery.tvshows.repository.FavoriteRepository
+import com.distillery.tvshows.repository.TVShowRepository
 import com.distillery.tvshows.utils.helpers.ConnectivityHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -15,13 +15,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ShowsViewModel @Inject constructor(
-    private val tvApi: TVApi,
-    private val repository: FavoritesRepository,
+    private val showsRepository: TVShowRepository,
+    private val favoriteRepository: FavoriteRepository,
     private val connectivityHelper: ConnectivityHelper,
 ) : ViewModel() {
 
-    private val _tvShows = MutableLiveData(emptyList<FavoriteTVShow>())
-    val tvShows: LiveData<List<FavoriteTVShow>> = _tvShows
+    private val _tvShows = MutableLiveData(emptyList<TVShow>())
+    val tvShows: LiveData<List<TVShow>> = _tvShows
 
     private val _errorOcurred = MutableLiveData(NetError.NONE)
     val errorOcurred: LiveData<NetError> = _errorOcurred
@@ -34,10 +34,7 @@ class ShowsViewModel @Inject constructor(
         if(hasConnectivity) {
             viewModelScope.launch {
                 try {
-                    val tvShows = tvApi.getShows().map { FavoriteTVShow.from(it) }
-                    repository.getFavorites().forEach {
-                        tvShows.firstOrNull { item -> item.id == it.id }?.isFavorite = true
-                    }
+                    val tvShows = showsRepository.getTVShows()
                     _tvShows.postValue(tvShows)
                     _errorOcurred.postValue(NetError.NONE)
                 } catch (error: Throwable) {
@@ -49,14 +46,14 @@ class ShowsViewModel @Inject constructor(
         }
     }
 
-    fun doFavoriteAction(tvShow: FavoriteTVShow) {
+    fun doFavoriteAction(tvShow: TVShow) {
         viewModelScope.launch {
             if (tvShow.isFavorite) {
                 tvShow.isFavorite = false
-                repository.removeFavoriteTVShow(tvShow)
+                favoriteRepository.removeFavorite(tvShow)
             } else {
                 tvShow.isFavorite = true
-                repository.addFavoriteTVShow(tvShow)
+                favoriteRepository.addFavorite(tvShow)
             }
         }
     }

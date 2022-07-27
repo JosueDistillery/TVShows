@@ -4,24 +4,24 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.distillery.tvshows.data.entity.FavoriteTVShow
-import com.distillery.tvshows.repository.FavoritesRepository
+import com.distillery.tvshows.data.entity.TVShow
+import com.distillery.tvshows.repository.FavoriteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
-    private val repository: FavoritesRepository
+    private val repository: FavoriteRepository
 ) : ViewModel() {
 
-    private val _tvShowDetail = MutableLiveData<FavoriteTVShow>()
-    val tvShowDetail: LiveData<FavoriteTVShow> = _tvShowDetail
+    private val _tvShowDetail = MutableLiveData<TVShow>()
+    val tvShowDetail: LiveData<TVShow> = _tvShowDetail
 
     /**
      * Load TV Show Detail
      */
-    fun loadDetail(tvShowSelected: FavoriteTVShow?) {
+    fun loadDetail(tvShowSelected: TVShow?) {
         tvShowSelected?.let {
             viewModelScope.launch {
                 if(!repository.anyFavoriteById(it.id))
@@ -32,17 +32,17 @@ class DetailViewModel @Inject constructor(
     }
 
 
-    fun addFavorite(favoriteTVShow: FavoriteTVShow) {
+    fun addFavorite(favorite: TVShow) {
         viewModelScope.launch {
-            favoriteTVShow.isFavorite = true
-            repository.addFavoriteTVShow(favoriteTVShow)
+            favorite.isFavorite = true
+            repository.addFavorite(favorite)
         }
     }
 
-    fun removeFavorite(favoriteTVShow: FavoriteTVShow) {
+    fun removeFavorite(favorite: TVShow) {
         viewModelScope.launch {
-            favoriteTVShow.isFavorite = false
-            repository.removeFavoriteTVShow(favoriteTVShow)
+            favorite.isFavorite = false
+            repository.removeFavorite(favorite)
         }
     }
 }

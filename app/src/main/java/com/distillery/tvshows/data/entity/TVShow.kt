@@ -3,12 +3,11 @@ package com.distillery.tvshows.data.entity
 import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.distillery.tvshows.data.model.*
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@Entity(tableName = FavoriteTVShow.TABLE_NAME)
-data class FavoriteTVShow(
+@Entity(tableName = TVShow.TABLE_NAME)
+data class TVShow(
     @PrimaryKey
     val id: Int,
     val name: String,
@@ -31,12 +30,12 @@ data class FavoriteTVShow(
         /**
          * Table name to store favorites TV Shows
          */
-        const val TABLE_NAME: String = "favorites"
+        const val TABLE_NAME: String = "shows"
 
         /**
-         * Build [FavoriteTVShow] from [TVShow]
+         * Build [TVShow] entity from [TVShow] model
          */
-        fun from(tvShow: TVShow): FavoriteTVShow = FavoriteTVShow(
+        fun from(tvShow: com.distillery.tvshows.data.model.TVShow): TVShow = TVShow(
             id = tvShow.id,
             name = tvShow.name,
             type = tvShow.type,

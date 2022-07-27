@@ -4,18 +4,18 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.distillery.tvshows.data.entity.FavoriteTVShow
+import com.distillery.tvshows.data.entity.TVShow
 import com.distillery.tvshows.databinding.ItemFavoriteBinding
 
 class FavoritesViewHolder(private val binding: ItemFavoriteBinding) : RecyclerView.ViewHolder(binding.root) {
     /**
-     * @param content [FavoriteTVShow] for this item layout
+     * @param content [Favorite] for this item layout
      * @param onItemClick Click listener for this item layout
      */
     fun bindTo(
-        content: FavoriteTVShow,
-        onItemClick: (FavoriteTVShow) -> Unit,
-        onLongClick: (FavoriteTVShow, Int) -> Unit,
+        content: TVShow,
+        onItemClick: (TVShow) -> Unit,
+        onLongClick: (TVShow, Int) -> Unit,
     ) {
         with(binding) {
             binding.favoriteName.text = content.name

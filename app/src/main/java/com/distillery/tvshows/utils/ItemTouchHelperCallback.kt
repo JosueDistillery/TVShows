@@ -4,12 +4,11 @@ import android.graphics.Canvas
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.distillery.tvshows.R
-import com.distillery.tvshows.data.entity.FavoriteTVShow
+import com.distillery.tvshows.data.entity.TVShow
 import com.distillery.tvshows.ui.shows.ShowsViewHolder
 
 class ItemTouchHelperCallback(
-    private val onSwipe: (FavoriteTVShow, Int) -> Unit
+    private val onSwipe: (TVShow, Int) -> Unit
 ) : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.START) {
 
     override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean =

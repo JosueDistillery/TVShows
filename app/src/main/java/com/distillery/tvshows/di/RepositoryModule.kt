@@ -1,8 +1,12 @@
 package com.distillery.tvshows.di
 
 
-import com.distillery.tvshows.database.dao.FavoriteTVShowDao
-import com.distillery.tvshows.repository.FavoritesRepository
+import com.distillery.tvshows.database.dao.FavoriteDao
+import com.distillery.tvshows.database.dao.TVShowDao
+import com.distillery.tvshows.network.TVApi
+import com.distillery.tvshows.repository.FavoriteRepository
+import com.distillery.tvshows.repository.TVShowRepository
+import com.distillery.tvshows.utils.helpers.ConnectivityHelper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,10 +17,22 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object RepositoryModule {
     /**
-     * Provide [FavoritesRepository]
+     * Provide [FavoriteRepository]
      */
     @Provides
     @Singleton
-    fun provideFavoritesRepository(favoriteTVShowDao: FavoriteTVShowDao): FavoritesRepository =
-        FavoritesRepository.buildRepository(favoriteTVShowDao)
+    fun provideFavoriteRepository(
+        favoriteDao: FavoriteDao
+    ): FavoriteRepository =FavoriteRepository.buildRepository(favoriteDao)
+
+    /**
+     * Provide [TVShowRepository]
+     */
+    @Provides
+    @Singleton
+    fun provideTVShowRepository(
+        tvApi: TVApi,
+        tvShowDao: TVShowDao,
+        connectivity: ConnectivityHelper
+    ): TVShowRepository = TVShowRepository.buildRepository(tvApi, tvShowDao, connectivity)
 }

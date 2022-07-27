@@ -3,28 +3,26 @@ package com.distillery.tvshows.ui.shows
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.distillery.tvshows.data.entity.FavoriteTVShow
+import com.distillery.tvshows.data.entity.TVShow
 import com.distillery.tvshows.databinding.ItemShowBinding
 
 class ShowsViewHolder(private val binding: ItemShowBinding) : RecyclerView.ViewHolder(binding.root) {
 
-    var item: FavoriteTVShow? = null
+    var item: TVShow? = null
 
     val addView: View by lazy { binding.addView }
     val deleteView: View by lazy { binding.deleteView }
     val foregroundView: View by lazy { binding.foregroundView }
 
     /**
-     * @param content [FavoriteTVShow] for this item layout
+     * @param content [Favorite] for this item layout
      * @param onItemClick Click listener for this item layout
      */
     fun bindTo(
-        content: FavoriteTVShow,
-        onItemClick: (FavoriteTVShow) -> Unit,
+        content: TVShow,
+        onItemClick: (TVShow) -> Unit,
     ) {
         item = content
 

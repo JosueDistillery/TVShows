@@ -2,17 +2,17 @@ package com.distillery.tvshows.ui.favorite
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.distillery.tvshows.data.entity.FavoriteTVShow
+import com.distillery.tvshows.data.entity.TVShow
 
 /**
  * Adapter for Favorites TV shows
  */
 class FavoritesAdapter(
-    private val onItemClick: (FavoriteTVShow) -> Unit,
-    private val onLongClick: (FavoriteTVShow, Int) -> Unit,
+    private val onItemClick: (TVShow) -> Unit,
+    private val onLongClick: (TVShow, Int) -> Unit,
 ) : RecyclerView.Adapter<FavoritesViewHolder>() {
 
-    private val items = mutableListOf<FavoriteTVShow>()
+    private val items = mutableListOf<TVShow>()
 
     override fun getItemCount(): Int = items.size
 
@@ -28,7 +28,7 @@ class FavoritesAdapter(
         holder.unBind()
     }
 
-    fun setData(favorites: List<FavoriteTVShow>) {
+    fun setData(favorites: List<TVShow>) {
         items.clear()
         items.addAll(favorites)
         notifyDataSetChanged()

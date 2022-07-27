@@ -10,7 +10,7 @@
         app:destination="@id/detail_bottom_navigation">
         <argument
             android:name="tvShowDetail"
-            app:argType="com.distillery.tvshows.data.entity.FavoriteTVShow"
+            app:argType="com.distillery.tvshows.data.entity.TVShow"
             app:nullable="true"
             android:defaultValue="@null"/>
     </action>

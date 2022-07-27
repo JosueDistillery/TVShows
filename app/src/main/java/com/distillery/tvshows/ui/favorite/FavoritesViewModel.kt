@@ -4,19 +4,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.distillery.tvshows.data.entity.FavoriteTVShow
-import com.distillery.tvshows.repository.FavoritesRepository
+import com.distillery.tvshows.data.entity.TVShow
+import com.distillery.tvshows.repository.FavoriteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class FavoritesViewModel @Inject constructor(
-    private val repository: FavoritesRepository
+    private val repository: FavoriteRepository
 ) : ViewModel() {
 
-    private val _favorites = MutableLiveData(emptyList<FavoriteTVShow>())
-    val favorites: LiveData<List<FavoriteTVShow>> = _favorites
+    private val _favorites = MutableLiveData(emptyList<TVShow>())
+    val favorites: LiveData<List<TVShow>> = _favorites
 
     /**
      * Load Favorites
@@ -27,9 +27,9 @@ class FavoritesViewModel @Inject constructor(
         }
     }
 
-    fun removeFavorite(favoriteTVShow: FavoriteTVShow) {
+    fun removeFavorite(favorite: TVShow) {
         viewModelScope.launch {
-            repository.removeFavoriteTVShow(favoriteTVShow)
+            repository.removeFavorite(favorite)
         }
     }
 }

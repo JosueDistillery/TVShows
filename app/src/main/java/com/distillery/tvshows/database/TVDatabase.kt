@@ -5,13 +5,13 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.distillery.tvshows.data.entity.FavoriteTVShow
+import com.distillery.tvshows.data.entity.TVShow
 import com.distillery.tvshows.database.TVDatabase.Companion.DATABASE_VERSION
 import com.distillery.tvshows.database.converters.GenresConverter
-import com.distillery.tvshows.database.dao.FavoriteTVShowDao
+import com.distillery.tvshows.database.dao.*
 
 @Database(
-    entities = [FavoriteTVShow::class],
+    entities = [TVShow::class],
     version = DATABASE_VERSION,
     exportSchema = false
 )
@@ -33,5 +33,7 @@ abstract class TVDatabase : RoomDatabase() {
         }
     }
 
-    abstract fun favoriteTVShowDao(): FavoriteTVShowDao
+    abstract fun tvShowDao(): TVShowDao
+
+    abstract fun favoriteTVShowDao(): FavoriteDao
 }

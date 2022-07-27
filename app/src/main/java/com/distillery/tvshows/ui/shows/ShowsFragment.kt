@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.slidingpanelayout.widget.SlidingPaneLayout
 import com.distillery.tvshows.R
-import com.distillery.tvshows.data.entity.FavoriteTVShow
+import com.distillery.tvshows.data.entity.TVShow
 import com.distillery.tvshows.data.enums.NetError
 import com.distillery.tvshows.databinding.FragmentShowsBinding
 import com.distillery.tvshows.ui.detail.DetailFragmentDirections
@@ -102,7 +102,7 @@ class ShowsFragment : Fragment() {
         }
     }
 
-    private fun onItemClick(tvShow: FavoriteTVShow) {
+    private fun onItemClick(tvShow: TVShow) {
         if (isDualPane) {
             binding?.let {
                 it.detailNavHostFragment?.findNavController()
@@ -114,7 +114,7 @@ class ShowsFragment : Fragment() {
         }
     }
 
-    private fun onSwipe(tvShow: FavoriteTVShow, position: Int) = try {
+    private fun onSwipe(tvShow: TVShow, position: Int) = try {
         doFavoriteAction(tvShow, position)
     } catch (error: Throwable) {
         createAndShowDialog(
@@ -125,7 +125,7 @@ class ShowsFragment : Fragment() {
         )
     }
 
-    private fun doFavoriteAction(tvShow: FavoriteTVShow, position: Int) {
+    private fun doFavoriteAction(tvShow: TVShow, position: Int) {
         viewModel.doFavoriteAction(tvShow)
         adapter.setItemChanged(tvShow, position)
         if(isDualPane) requireActivity().invalidateOptionsMenu()

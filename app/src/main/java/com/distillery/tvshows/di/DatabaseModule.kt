@@ -3,7 +3,7 @@ package com.distillery.tvshows.di
 import android.content.Context
 import com.distillery.tvshows.database.TVDatabase
 import com.distillery.tvshows.database.converters.GenresConverter
-import com.distillery.tvshows.database.dao.FavoriteTVShowDao
+import com.distillery.tvshows.database.dao.*
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
@@ -35,9 +35,16 @@ object DatabaseModule {
     }
 
     /**
-     * Provide [FavoriteTVShowDao]
+     * Provide [FavoriteDao]
      */
     @Provides
     @Singleton
-    fun provideFavoriteTVShowDao(tvDatabase: TVDatabase): FavoriteTVShowDao = tvDatabase.favoriteTVShowDao()
+    fun provideTVShowDao(tvDatabase: TVDatabase): TVShowDao = tvDatabase.tvShowDao()
+
+    /**
+     * Provide [FavoriteDao]
+     */
+    @Provides
+    @Singleton
+    fun provideFavoriteTVShowDao(tvDatabase: TVDatabase): FavoriteDao = tvDatabase.favoriteTVShowDao()
 }
