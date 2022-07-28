@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.slidingpanelayout.widget.SlidingPaneLayout
 import com.distillery.tvshows.R
 import com.distillery.tvshows.data.entity.TVShow
+import com.distillery.tvshows.data.enums.ScreenType
 import com.distillery.tvshows.databinding.FragmentFavoritesBinding
 import com.distillery.tvshows.ui.detail.DetailFragmentDirections
 import com.distillery.tvshows.utils.DualPaneOnBackPressedCallback
@@ -76,11 +77,11 @@ class FavoritesFragment : Fragment() {
         if (isDualPane) {
             binding?.let {
                 it.detailNavHostFragment?.findNavController()
-                    ?.navigate(DetailFragmentDirections.actionDetailFragment(tvShow))
+                    ?.navigate(DetailFragmentDirections.actionDetailFragment(tvShowDetail = tvShow, screenType = ScreenType.Favorites))
                 it.slidingPaneLayout.open()
             }
         } else {
-            findNavController().navigate(FavoritesFragmentDirections.actionDetailFragment(tvShow))
+            findNavController().navigate(FavoritesFragmentDirections.actionDetailFragment(tvShowDetail = tvShow, screenType = ScreenType.Favorites))
         }
     }
 

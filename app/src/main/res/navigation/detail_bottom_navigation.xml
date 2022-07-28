@@ -13,6 +13,10 @@
             app:argType="com.distillery.tvshows.data.entity.TVShow"
             app:nullable="true"
             android:defaultValue="@null"/>
+        <argument
+            android:name="screenType"
+            app:argType="com.distillery.tvshows.data.enums.ScreenType"
+            android:defaultValue="Shows"/>
     </action>
 
     <fragment
@@ -25,5 +29,9 @@
             app:argType="com.distillery.tvshows.data.entity.TVShow"
             app:nullable="true"
             android:defaultValue="@null"/>
+        <argument
+            android:name="screenType"
+            app:argType="com.distillery.tvshows.data.enums.ScreenType"
+            android:defaultValue="Shows"/>
     </fragment>
 </navigation>

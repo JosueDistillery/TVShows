@@ -6,12 +6,12 @@ import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.fragment.navArgs
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.*
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.distillery.tvshows.R
+import com.distillery.tvshows.data.enums.ScreenType
 import com.distillery.tvshows.databinding.FragmentDetailBinding
 import com.distillery.tvshows.utils.extensions.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -46,7 +46,7 @@ class DetailFragment : Fragment() {
         setHasOptionsMenu(true)
         initUi()
         initObservers()
-        viewModel.loadDetail(args.tvShowDetail)
+        viewModel.loadDetail(args.tvShowDetail, args.screenType)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -75,7 +75,6 @@ class DetailFragment : Fragment() {
             }
             R.id.action_remove -> {
                 args.tvShowDetail?.let(viewModel::removeFavorite)
-                if (isDualPane) findNavController().popBackStack()
                 Toast.makeText(requireContext(), getString(R.string.sucess_message), Toast.LENGTH_SHORT).show()
                 return true
             }
@@ -123,7 +122,12 @@ class DetailFragment : Fragment() {
         }
 
         viewModel.isFavorite.observe(viewLifecycleOwner){
-            it?.let { requireActivity().invalidateOptionsMenu() }
+            it?.let { isFavorite ->
+                requireActivity().invalidateOptionsMenu()
+                if ((isDualPane || args.screenType == ScreenType.Favorites) && !isFavorite) {
+                    findNavController().popBackStack()
+                }
+            }
         }
     }
 

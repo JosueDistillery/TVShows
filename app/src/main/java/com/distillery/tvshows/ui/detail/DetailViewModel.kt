@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.distillery.tvshows.data.entity.Favorite
 import com.distillery.tvshows.data.entity.TVShow
+import com.distillery.tvshows.data.enums.ScreenType
 import com.distillery.tvshows.repository.FavoriteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -19,13 +20,13 @@ class DetailViewModel @Inject constructor(
     private val _tvShowDetail = MutableLiveData<TVShow>()
     val tvShowDetail: LiveData<TVShow> = _tvShowDetail
 
-    private val _isFavorite = MutableLiveData(false)
+    private val _isFavorite = MutableLiveData<Boolean>()
     val isFavorite: LiveData<Boolean> = _isFavorite
 
     /**
      * Load TV Show Detail
      */
-    fun loadDetail(tvShowSelected: TVShow?) {
+    fun loadDetail(tvShowSelected: TVShow?, screenType: ScreenType) {
         tvShowSelected?.let {
             viewModelScope.launch {
                 val favorite = repository.getFavoriteById(it.id)
@@ -33,6 +34,8 @@ class DetailViewModel @Inject constructor(
                 _tvShowDetail.postValue(it)
             }
         }
+
+        _isFavorite.postValue(screenType == ScreenType.Favorites)
     }
 
     fun addFavorite(tvShow: TVShow) {
